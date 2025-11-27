@@ -22,7 +22,6 @@ public class Main {
         ui.setFilePath("E:/apps/VS Code/sw testing project/demo/src/main/java/com/example/users.txt");
         users = ui.getUsers();
         
-        Map<String, Vector<SimpleEntry<String,String>>> movieMap = movieInput.getMap();
         for (User user : users) {
             Recommendation.recommendMovies(user, movies);
         }

@@ -4,8 +4,8 @@ public class Movie {
     private String movieId;
     private String [] movieGenre;
     public Movie() {
-        movieTitle = "";
-        movieId = "";
+        movieTitle = null;
+        movieId = null;
         movieGenre = new String[10];
     }
     public void setMovieTitle(String movieTitle) {

@@ -59,7 +59,7 @@ public class userInput {
 
                 User user = new User();
                 String [] parts = UserLine.split(",", 2);
-                                try {
+                try {
                     if (!checkName(parts[0])) {
                         throw new Exception("ERROR: User Name {" + parts[0] + "} is wrong:");
                     }
@@ -69,16 +69,13 @@ public class userInput {
 
                     user.setUserName(parts[0].trim());
                     user.setUserId(parts[1].trim());
+                    String [] likedMovies = likedMoviesLine.split(",", 10);
+                    user.setMoviesIds(likedMovies);
+                    users.add(user);
                 }
                 catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                
-
-                String [] likedMovies = likedMoviesLine.split(",", 10);
-                user.setMoviesIds(likedMovies);
-
-                users.add(user);
             }
         }
         catch (IOException e) {

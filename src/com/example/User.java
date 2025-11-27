@@ -4,8 +4,8 @@ public class User {
     private String UserId;
     private String [] moviesIds;
     public User() {
-        userName = "";
-        UserId = "";
+        userName = null;
+        UserId = null;
         moviesIds = new String[20];
     }
     public String getUserName() {

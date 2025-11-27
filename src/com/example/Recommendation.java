@@ -16,9 +16,7 @@ public class Recommendation {
                         if (recommendedMovies != null) {
                             for (SimpleEntry<String, String> recommendedMovieId : recommendedMovies) {
                                 if (!Arrays.asList(user.getMoviesIds()).contains(recommendedMovieId.getValue())) {
-
                                     recommendations.add(recommendedMovieId.getKey());
-
                                 }
                             }
                         }
