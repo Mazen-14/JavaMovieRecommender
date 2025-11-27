@@ -26,17 +26,22 @@ A Java console application that recommends movies based on genres the user alrea
 ## 📂 Project Structure
 
 ```
-src/com/example/
+src/
 │
-├── Main.java              // Program entry point
+├── com/example/              // Core application logic
+│   ├── Main.java             // Entry point of the program
+│   ├── Movie.java            // Movie model (title, ID, genres)
+│   ├── User.java             // User model (name, ID, liked movies)
+│   ├── Recommendation.java   // Recommendation engine
+│   ├── movieInput.java       // Parser for movies.txt + validation
+│   ├── userInput.java        // Parser for users.txt + validation
+│   ├── movies.txt            // Movie data source
+│   └── users.txt             // User data source
 │
-├── User.java              // User data model
-├── Movie.java             // Movie data model
-│
-├── userInput.java         // Reads & validates user file
-├── movieInput.java        // Reads & validates movie file
-│
-└── Recommendation.java    // Recommendation engine
+└── test/                     // Unit tests
+    ├── MovieTest.java
+    ├── UserInputTest.java
+    └── movieInputTest.java
 ```
 
 ---
@@ -99,3 +104,14 @@ Two lines per user:
 User Name, UserID
 LikedMovieID1, LikedMovieID2, ...
 ```
+
+## 🧪 Testing
+
+The `test/` directory contains unit tests that check the correctness of your data models and input parsers.
+These tests ensure:
+
+* movies are read and validated properly
+* users are parsed with correct ID checks
+* genre lists and relationships are processed correctly
+  
+---
