@@ -4,8 +4,6 @@ import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.example.Entities.Movie;
 import com.example.Entities.User;
 import com.example.Writers.Recommendation;
+import com.example.Readers.movieInput;
 
 public class RecommendationTest_Level1 {
 
@@ -65,49 +64,21 @@ public class RecommendationTest_Level1 {
         when(user.getUserId()).thenReturn("123456789");
         when(user.getMoviesIds()).thenReturn(new String[]{"M123"}); 
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(out));
+        movieInput.resetMap();
 
-        try (var mocked = mockStatic(Recommendation.class)) {
-            mocked.when(() -> Recommendation.recommendMovies(user, movies))
-                .thenAnswer(invocation -> {
-                    System.out.println(user.getUserName() + ", " + user.getUserId());
-                    List<String> watched = Arrays.asList(user.getMoviesIds());
-                    java.util.Set<String> watchedGenres = new java.util.HashSet<>();
-                    for (Movie w : movies) {
-                        if (watched.contains(w.getMovieId())) {
-                            String[] gs = w.getMovieGenre();
-                            if (gs != null) {
-                                for (String g : gs) watchedGenres.add(g);
-                            }
-                        }
-                    }
-                    for (Movie m : movies) {
-                        if (!watched.contains(m.getMovieId())) {
-                            String[] gs = m.getMovieGenre();
-                            boolean sameGenre = false;
-                            if (gs != null) {
-                                for (String g : gs) {
-                                    if (watchedGenres.contains(g)) { sameGenre = true; break; }
-                                }
-                            }
-                            if (sameGenre) {
-                                System.out.println(m.getMovieTitle());
-                            }
-                        }
-                    }
-                    return null;
-                });
-
-            Recommendation.recommendMovies(user, movies); 
-        } finally {
-            System.setOut(originalOut);
+        for (Movie m : movies) {
+            String title = m.getMovieTitle();
+            String id = m.getMovieId();
+            for (String genre : m.getMovieGenre()) {
+                movieInput.getMap().putIfAbsent(genre, new Vector<>());
+                movieInput.getMap().get(genre).add(new java.util.AbstractMap.SimpleEntry<>(title, id));
+            }
         }
-        String output = out.toString().replace("\r","").trim(); 
-        assertEquals("Mazen, 123456789\nInterstellar", output);
-    }   
 
+        String output = captureOutput(() -> Recommendation.recommendMovies(user, movies));
+        String out = output.toString().replace("\r", "").trim();
+        assertEquals("Mazen, 123456789\nInterstellar", out);
+    }   
 
     @Test
     void testRecommendMovies_NoRecommendations() {
@@ -155,37 +126,20 @@ public class RecommendationTest_Level1 {
         when(user.getUserName()).thenReturn("Mazen");
         when(user.getUserId()).thenReturn("123456789");
         when(user.getMoviesIds()).thenReturn(new String[]{"I123", "Z123"});
-        
-        try (var mocked = mockStatic(Recommendation.class)) {
-            mocked.when(() -> Recommendation.recommendMovies(user, movies))
-                  .thenAnswer(invocation -> {
-                      System.out.println(user.getUserName() + ", " + user.getUserId());
-                      List<String> watched = Arrays.asList(user.getMoviesIds());
-                      java.util.Set<String> watchedGenres = new java.util.HashSet<>();
-                      for (Movie w : movies) {
-                          if (watched.contains(w.getMovieId())) {
-                              String[] gs = w.getMovieGenre();
-                              if (gs != null) for (String g : gs) watchedGenres.add(g);
-                          }
-                      }
-                      for (Movie m : movies) {
-                          if (!watched.contains(m.getMovieId())) {
-                              String[] gs = m.getMovieGenre();
-                              boolean sameGenre = false;
-                              if (gs != null) {
-                                  for (String g : gs) {
-                                      if (watchedGenres.contains(g)) { sameGenre = true; break; }
-                                  }
-                              }
-                              if (sameGenre) System.out.println(m.getMovieTitle());
-                          }
-                      }
-                      return null;
-                    });
 
-            String output = captureOutput(() -> Recommendation.recommendMovies(user, movies));
-            assertTrue(output.contains("Moon"));
+        movieInput.resetMap();
+
+        for (Movie m : movies) {
+            String title = m.getMovieTitle();
+            String id = m.getMovieId();
+            for (String genre : m.getMovieGenre()) {
+                movieInput.getMap().putIfAbsent(genre, new Vector<>());
+                movieInput.getMap().get(genre).add(new java.util.AbstractMap.SimpleEntry<>(title, id));
+            }
         }
+
+        String output = captureOutput(() -> Recommendation.recommendMovies(user, movies));
+        assertTrue(output.contains("Moon"));
     }
 
     @Test
